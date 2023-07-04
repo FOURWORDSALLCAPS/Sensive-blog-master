@@ -1,6 +1,14 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.db.models import Count
+
+
+class TagQuerySet(models.QuerySet):
+
+    def popular(self):
+        posts_at_popular = self.annotate(Count('posts')).order_by('-posts__count')
+        return posts_at_popular
 
 
 class Post(models.Model):
@@ -53,6 +61,8 @@ class Tag(models.Model):
         ordering = ['title']
         verbose_name = 'тег'
         verbose_name_plural = 'теги'
+
+    objects = TagQuerySet.as_manager()
 
 
 class Comment(models.Model):
