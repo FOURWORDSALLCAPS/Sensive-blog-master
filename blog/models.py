@@ -7,15 +7,13 @@ from django.db.models import Count
 class TagQuerySet(models.QuerySet):
 
     def popular(self):
-        tags_at_popular = self.annotate(Count('posts')).order_by('-posts__count')
-        return tags_at_popular
+        return self.annotate(posts_count=Count('posts')).order_by('-posts_count')
 
 
 class PostQuerySet(models.QuerySet):
 
     def popular(self):
-        posts_at_popular = self.annotate(Count('likes')).order_by('-likes__count')
-        return posts_at_popular
+        return self.annotate(Count('likes')).order_by('-likes__count')
 
     def fetch_with_comments_count(self):
         most_popular_posts_ids = self.values_list('id', flat=True)
