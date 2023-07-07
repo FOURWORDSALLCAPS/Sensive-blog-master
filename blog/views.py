@@ -27,8 +27,7 @@ def serialize_tag(tag):
 
 def index(request):
     popular_tags = Tag.objects.popular()
-    prefetch = Prefetch('tags', queryset=popular_tags, to_attr='related_tags')
-    all_posts = Post.objects.prefetch_related(prefetch)
+    all_posts = Post.objects.prefetch_with_related_tags()
     most_popular_posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name'))[:5] \
         .fetch_with_comments_count()
     fresh_posts = all_posts.order_by('published_at').prefetch_related(Prefetch('author', to_attr='author_name')) \
@@ -48,8 +47,7 @@ def index(request):
 
 def post_detail(request, slug):
     popular_tags = Tag.objects.popular()
-    prefetch = Prefetch('tags', queryset=popular_tags, to_attr='related_tags')
-    all_posts = Post.objects.prefetch_related(prefetch)
+    all_posts = Post.objects.prefetch_with_related_tags()
     most_popular_posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name'))[:5] \
         .fetch_with_comments_count()
     most_popular_tags = popular_tags[:5]
@@ -102,15 +100,14 @@ def post_detail(request, slug):
 
 def tag_filter(request, tag_title):
     popular_tags = Tag.objects.popular()
-    prefetch = Prefetch('tags', queryset=popular_tags, to_attr='related_tags')
-    all_posts = Post.objects.prefetch_related(prefetch)
+    all_posts = Post.objects.prefetch_with_related_tags()
     most_popular_posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name'))[:5] \
         .fetch_with_comments_count()
     most_popular_tags = popular_tags[:5]
 
     tag = get_object_or_404(popular_tags, title=tag_title)
 
-    related_posts = tag.posts.all()[:20].prefetch_related(prefetch).prefetch_related(Prefetch
+    related_posts = tag.posts.all()[:20].prefetch_with_related_tags().prefetch_related(Prefetch
                                                                                      ('author',
                                                                                       to_attr='author_name'))\
         .fetch_with_comments_count()
