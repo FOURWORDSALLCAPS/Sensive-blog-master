@@ -52,7 +52,6 @@ def post_detail(request, slug):
         .fetch_with_comments_count()
     most_popular_tags = popular_tags[:5]
     posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name')).fetch_with_comments_count()
-    comments = Comment.objects.prefetch_related(Prefetch('author', to_attr='author_name'))
 
     post = None
     for p in posts:
@@ -60,13 +59,13 @@ def post_detail(request, slug):
             post = p
             break
 
-    comments = get_list_or_404(comments.filter(post=post))
+    comments = get_list_or_404(post.comments.select_related('author'))
     serialized_comments = []
     for comment in comments:
         serialized_comments.append({
             'text': comment.text,
             'published_at': comment.published_at,
-            'author': comment.author_name,
+            'author': comment.author.username,
         })
 
     related_tags = post.related_tags
