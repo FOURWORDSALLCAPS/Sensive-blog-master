@@ -69,8 +69,6 @@ def post_detail(request, slug):
             'author': comment.author_name,
         })
 
-    likes = post.likes.all()
-
     related_tags = post.related_tags
 
     serialized_post = {
@@ -78,7 +76,7 @@ def post_detail(request, slug):
         'text': post.text,
         'author': post.author_name,
         'comments': serialized_comments,
-        'likes_amount': len(likes),
+        'likes_amount': post.likes__count,
         'image_url': post.image.url if post.image else None,
         'published_at': post.published_at,
         'slug': post.slug,
