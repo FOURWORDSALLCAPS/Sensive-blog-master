@@ -21,11 +21,10 @@ class PostQuerySet(models.QuerySet):
             comments_count=Count('id'))
         count_for_id = {comment['post_id']: comment['comments_count'] for comment in comments_count}
 
-        posts_with_comments_count = list(self)
-        for post in posts_with_comments_count:
+        for post in self:
             post.comments_count = count_for_id.get(post.id, 0)
 
-        return posts_with_comments_count
+        return list(self)
 
 
 class Post(models.Model):
