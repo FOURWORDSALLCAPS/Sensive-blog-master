@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from blog.models import Comment, Post, Tag
+from blog.models import Post, Tag
 from django.db.models import Prefetch
 from django.shortcuts import get_object_or_404, get_list_or_404
 
@@ -102,8 +102,8 @@ def tag_filter(request, tag_title):
     tag = get_object_or_404(popular_tags, title=tag_title)
 
     related_posts = tag.posts.all()[:20].prefetch_with_related_tags().prefetch_related(Prefetch
-                                                                                     ('author',
-                                                                                      to_attr='author_name'))\
+                                                                                       ('author',
+                                                                                        to_attr='author_name')) \
         .fetch_with_comments_count()
 
     context = {
