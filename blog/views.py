@@ -51,15 +51,11 @@ def post_detail(request, slug):
     most_popular_posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name'))[:5] \
         .fetch_with_comments_count()
     most_popular_tags = popular_tags[:5]
-    posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name')).fetch_with_comments_count()
+    posts = all_posts.popular().prefetch_related(Prefetch('author', to_attr='author_name'))
 
-    post = None
-    for p in posts:
-        if p.slug == slug:
-            post = p
-            break
+    post = get_object_or_404(posts, slug=slug)
 
-    comments = get_list_or_404(post.comments.select_related('author'))
+    comments = post.comments.select_related('author')
     serialized_comments = []
     for comment in comments:
         serialized_comments.append({
