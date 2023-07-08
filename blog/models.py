@@ -37,9 +37,6 @@ class PostQuerySet(models.QuerySet):
         return list(self)
 
 
-class PrefetchQuerySet(models.QuerySet): pass
-
-
 class Post(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField('Заголовок', max_length=200)
@@ -63,6 +60,8 @@ class Post(models.Model):
         related_name='posts',
         verbose_name='Теги')
 
+    objects = PostQuerySet.as_manager()
+
     class Meta:
         ordering = ['-published_at']
         verbose_name = 'пост'
@@ -74,12 +73,12 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('post_detail', args={'slug': self.slug})
 
-    objects = PostQuerySet.as_manager()
-
 
 class Tag(models.Model):
     id = models.BigAutoField(primary_key=True)
     title = models.CharField('Тег', max_length=20, unique=True)
+
+    objects = TagQuerySet.as_manager()
 
     class Meta:
         ordering = ['title']
@@ -94,8 +93,6 @@ class Tag(models.Model):
 
     def clean(self):
         self.title = self.title.lower()
-
-    objects = TagQuerySet.as_manager()
 
 
 class Comment(models.Model):
