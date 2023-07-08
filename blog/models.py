@@ -25,6 +25,11 @@ class PostQuerySet(models.QuerySet):
         prefetch = Prefetch('comments', queryset=popular_tags, to_attr='comments')
         return self.prefetch_related(prefetch)
 
+    def prefetch_with_related_author(self):
+        popular_tags = Tag.objects.popular()
+        prefetch = Prefetch('author', queryset=popular_tags, to_attr='author_name')
+        return self.prefetch_related(prefetch)
+
     def fetch_with_comments_count(self):
         most_popular_posts_ids = self.values_list('id', flat=True)
         comments_count = Comment.objects.filter(post_id__in=most_popular_posts_ids).values('post_id').annotate(
