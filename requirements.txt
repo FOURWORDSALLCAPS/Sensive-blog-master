@@ -1,12 +1,4 @@
 Django~=4.2.3
 Pillow~=8.0.1
-pip~=23.1.2
-pytz~=2023.3
-asgiref~=3.7.2
-sqlparse~=0.4.4
-marshmallow~=3.19.0
-python-dotenv~=1.0.0
-setuptools~=41.2.0
-packaging~=23.1
 django-debug-toolbar~=4.1.0
 environs~=9.3.0
